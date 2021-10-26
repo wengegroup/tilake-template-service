@@ -49,14 +49,11 @@ public class AtlasController {
             DbName = "weather_data";
         }
         //获取名称为 weather_data 的库相关信息
-        AtlasSearchResult atlasSearchResultDB = null;
         AtlasEntity.AtlasEntityWithExtInfo entityByGuid = null;
         try {
-            atlasSearchResultDB = atlasClientV2.basicSearch(typeName, "", "name="+DbName, true,1000,0);
-            //System.err.println(atlasSearchResultDB.getEntities().toString());
+            AtlasSearchResult atlasSearchResultDB = atlasClientV2.basicSearch(typeName, "", "name="+DbName, true,1000,0);
             //获取 weather_data 库的 guid
             String guid = atlasSearchResultDB.getEntities().get(0).getGuid();
-            //System.err.println(guid);
             //根据 guid  获取 weather_data库里的所有表
             entityByGuid = atlasClientV2.getEntityByGuid(guid);
         } catch (AtlasServiceException e) {
@@ -69,7 +66,6 @@ public class AtlasController {
             Map map = JSONObject.parseObject(JSONObject.toJSONString(table), Map.class);
             if(map.get("entityStatus").equals("ACTIVE")){
                 String tableGuid = (String)map.get("guid");
-                //Map<String, Object> attributeMap = this.getTableAttributes(tableGuid);
                 guidList.add(tableGuid);
             }
         }
@@ -134,31 +130,25 @@ public class AtlasController {
         return resMap;
     }
 
+    //封装表的基本信息
     private List<TableBasicInfoVo> getTableAttributesByGuids(List<String> tableGuidList) {
         if(tableGuidList==null || tableGuidList.size()<=0){
             return null;
         }
         List<TableBasicInfoVo> tableList = new ArrayList<>();
-        AtlasEntity.AtlasEntitiesWithExtInfo entitiesByGuids = null;
-        TableBasicInfoVo tableBasicInfoVo = null;
-        String guid = null;
-        String tableName = null;
-        String comment = null;
-        String db = null;
-        Date createTime = null;
         try {
-            entitiesByGuids = atlasClientV2.getEntitiesByGuids(tableGuidList);
+            AtlasEntity.AtlasEntitiesWithExtInfo entitiesByGuids = atlasClientV2.getEntitiesByGuids(tableGuidList);
             List<AtlasEntity> entityList = entitiesByGuids.getEntities();
             for (AtlasEntity atlasEntity : entityList) {
-                tableBasicInfoVo = new TableBasicInfoVo();
+                TableBasicInfoVo tableBasicInfoVo = new TableBasicInfoVo();
                 Map<String, Object> relationshipAttributesMap = atlasEntity.getRelationshipAttributes();
                 Map<String, Object> attributesMap = atlasEntity.getAttributes();
-                guid = atlasEntity.getGuid();
-                createTime = atlasEntity.getCreateTime();
-                comment = String.valueOf(attributesMap.get("comment"));
-                tableName = String.valueOf(attributesMap.get("name"));
+                String guid = atlasEntity.getGuid();
+                Date createTime = atlasEntity.getCreateTime();
+                String comment = String.valueOf(attributesMap.get("comment"));
+                String tableName = String.valueOf(attributesMap.get("name"));
                 Map map= (Map) relationshipAttributesMap.get("db");
-                db = String.valueOf(map.get("displayText"));
+                String db = String.valueOf(map.get("displayText"));
                 tableBasicInfoVo.setTableGuid(guid).setTableName(tableName).setTableComment(comment).setDb(db).setCreateTime(createTime);
                 tableList.add(tableBasicInfoVo);
             }
