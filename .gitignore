@@ -1,0 +1,9 @@
+logs
+*.log
+*.iml
+/.idea/
+*/target/
+/target/
+/common/core/target/
+/common/test/target/
+/common/web/target/
