@@ -16,16 +16,16 @@ public class TableBasicInfoVo {
     @ApiModelProperty(name = "tableComment", value = "表中文名")
     private String tableComment;
 
-    @ApiModelProperty(name = "id", value = "表的guid")
+    @ApiModelProperty(name = "tableGuid", value = "表的guid")
     private String tableGuid;
 
-    @ApiModelProperty(name = "id", value = "数据源类型")
-    private String DbType;
+    @ApiModelProperty(name = "dbType", value = "数据源类型")
+    private String dbType;
 
-    @ApiModelProperty(name = "id", value = "数据库")
-    private String Db;
+    @ApiModelProperty(name = "db", value = "数据库")
+    private String db;
 
-    @ApiModelProperty(name = "id", value = "创建时间")
+    @ApiModelProperty(name = "createTime", value = "创建时间")
     private Date createTime;
 
 }
