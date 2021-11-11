@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wenge</groupId>
-    <artifactId>tilake-atlas-api</artifactId>
+    <artifactId>tilake-atlas-service</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <parent>

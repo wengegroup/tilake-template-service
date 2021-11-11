@@ -26,7 +26,11 @@ public enum SystemErrorType implements ErrorType {
     REMOTE_CALL_FAILED("050000", "远程调用失败"),
     INVALID_DATA_SOURCE("050001","无效的数据源"),
 
-    REQUEST_FAILED("060000","请求错误，请填写正确的数据！")
+    REQUEST_FAILED("060000","请求错误，请填写正确的数据！"),
+
+    FAIL("070000","Hive的类型和库名不存在或不匹配"),
+    TABLE_NOT_EXIST("080000","该库下不存在该表"),
+    GUID_NOT_EXIST("090000","Guid不存在")
     ;
     /**
      * 错误类型码

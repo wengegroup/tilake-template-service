@@ -1,6 +1,7 @@
 package com.wenge.tilake.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.wenge.tilake.exception.SystemErrorType;
 import com.wenge.tilake.vo.Result;
 import com.wenge.tilake.vo.TableBasicInfoVo;
 import io.swagger.annotations.Api;
@@ -11,10 +12,8 @@ import org.apache.atlas.AtlasClientV2;
 import org.apache.atlas.AtlasServiceException;
 import org.apache.atlas.model.discovery.AtlasSearchResult;
 import org.apache.atlas.model.instance.AtlasEntity;
-import org.apache.atlas.model.instance.AtlasRelationship;
 import org.apache.atlas.model.lineage.AtlasLineageInfo;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,52 +23,68 @@ import java.util.*;
 
 
 @RestController
-@Api(value = "atlas-Api", tags = "atlas-Api")
+@Api(value = "atlas-Api", tags = "atlas-Api",description="Hive的类型名称，库名称，以及表名称务必要存在且对应。")
 @RequestMapping("/atlas/api/v1")
 public class AtlasController {
 
     private AtlasClientV2 atlasClientV2 = new AtlasClientV2(new String[]{"http://gzslave1:21000/"}, new String[]{"admin", "admin%2021"});
 
     /**
-     * 查询表名以及guid
+     * 获取Hive指定类型指定库下的所有表的基本信息
      * @return
      */
     @GetMapping("/getTableBasicInfo")
-    @ApiOperation("查询表的基本信息")
+    @ApiOperation("获取Hive指定类型指定库下的所有表的基本信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "typeName",value = "Hive的类型名称(非必填)",required = false,dataTypeClass = String.class,paramType = "path"),
-            @ApiImplicitParam(name = "DbName",value = "数据库名称(非必填)",required = false,dataTypeClass = String.class,paramType = "path")
+            @ApiImplicitParam(name = "typeName",value = "Hive的类型名称(非必填，默认为hive_db)",required = false,dataTypeClass = String.class,paramType = "query"),
+            @ApiImplicitParam(name = "DbName",value = "数据库名称(非必填，默认为weather_data)",required = false,dataTypeClass = String.class,paramType = "query")
     })
-    public Result getTableBasicInfo(@RequestParam(value = "typeName",required = false) String typeName,@RequestParam(value = "DbName",required = false)String DbName) {
+    public Result getTableBasicInfo(@RequestParam(value = "typeName",required = false,defaultValue = "hive_db") String typeName,
+                                    @RequestParam(value = "DbName",required = false,defaultValue = "weather_data")String DbName) {
 
-        if(typeName==null || StringUtils.equals(typeName,"")){
-            typeName = "hive_db";
-        }
-        if(DbName==null || StringUtils.equals(DbName,"")){
-            DbName = "weather_data";
-        }
-        //获取名称为 weather_data 的库相关信息
-        AtlasEntity.AtlasEntityWithExtInfo entityByGuid = null;
-        try {
-            AtlasSearchResult atlasSearchResultDB = atlasClientV2.basicSearch(typeName, "", "name="+DbName, true,1000,0);
-            //获取 weather_data 库的 guid
-            String guid = atlasSearchResultDB.getEntities().get(0).getGuid();
-            //根据 guid  获取 weather_data库里的所有表
-            entityByGuid = atlasClientV2.getEntityByGuid(guid);
-        } catch (AtlasServiceException e) {
-            e.printStackTrace();
-        }
-        //获取表的一些attributes
-        List<String> guidList = new ArrayList<>();
-        List tables = (List) entityByGuid.getEntity().getRelationshipAttributes().get("tables");
-        for (Object table : tables) {
-            Map map = JSONObject.parseObject(JSONObject.toJSONString(table), Map.class);
-            if(map.get("entityStatus").equals("ACTIVE")){
-                String tableGuid = (String)map.get("guid");
-                guidList.add(tableGuid);
+        AtlasEntity.AtlasEntityWithExtInfo entityByGuid = this.getTableFromTypeAndDb(typeName, DbName);
+        if(entityByGuid!=null){
+            //获取表的一些attributes
+            List<String> guidList = new ArrayList<>();
+            List tables = (List) entityByGuid.getEntity().getRelationshipAttributes().get("tables");
+            for (Object table : tables) {
+                Map map = JSONObject.parseObject(JSONObject.toJSONString(table), Map.class);
+                if(StringUtils.equals((String) map.get("entityStatus"),"ACTIVE")){
+                    guidList.add((String) map.get("guid"));
+                }
             }
+            return Result.success(this.getTableAttributesByGuids(guidList));
         }
-        return Result.success(this.getTableAttributesByGuids(guidList));
+        return Result.fail(SystemErrorType.FAIL);
+    }
+
+    //获取Hive指定类型指定库下指定表的guid
+    @GetMapping("/getTableGuid")
+    @ApiOperation("获取Hive指定类型指定库下指定表的guid")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "typeName",value = "Hive的类型名称(非必填，默认为hive_db)",required = false,dataTypeClass = String.class,paramType = "query"),
+            @ApiImplicitParam(name = "DbName",value = "数据库名称(非必填，默认为weather_data)",required = false,dataTypeClass = String.class,paramType = "query"),
+            @ApiImplicitParam(name = "tableName",value = "表名称(非必填，默认为early_warn_source)",required = false,dataTypeClass = String.class,paramType = "query")
+    })
+    public Result getTableGuid(@RequestParam(value = "typeName",required = false,defaultValue = "hive_db") String typeName,
+                               @RequestParam(value = "DbName",required = false,defaultValue = "weather_data")String DbName,
+                               @RequestParam(value = "tableName",required = false,defaultValue = "early_warn_source")String tableName) {
+
+        AtlasEntity.AtlasEntityWithExtInfo entityByGuid = this.getTableFromTypeAndDb(typeName, DbName);
+        //获取表的一些attributes
+        if(entityByGuid!=null){
+            List tables = (List) entityByGuid.getEntity().getRelationshipAttributes().get("tables");
+            for (Object table : tables) {
+                Map map = JSONObject.parseObject(JSONObject.toJSONString(table), Map.class);
+                if(StringUtils.equals( (String) map.get("entityStatus"),"ACTIVE") ){
+                    if(StringUtils.equals((String) map.get("displayText"),tableName)){
+                        return Result.success(map.get("guid"));
+                    }
+                }
+            }
+            return Result.fail(SystemErrorType.TABLE_NOT_EXIST);
+        }
+        return Result.fail(SystemErrorType.FAIL);
     }
 
     /**
@@ -85,7 +100,12 @@ public class AtlasController {
         } catch (AtlasServiceException e) {
             e.printStackTrace();
         }
-        return Result.success(lineageInfo);
+
+        if(lineageInfo!=null){
+            return Result.success(lineageInfo);
+        }else {
+            return Result.fail(SystemErrorType.GUID_NOT_EXIST);
+        }
     }
 
     /**
@@ -96,14 +116,39 @@ public class AtlasController {
     @ApiOperation("根据表的Guid查询对应实体信息，传参-guid（表的guid，String）")
     public Result getEntityByGuid(@RequestParam("guid") String guid){
         AtlasEntity.AtlasEntityWithExtInfo entityByGuid = null;
-        AtlasRelationship.AtlasRelationshipWithExtInfo relationshipByGuid = null;
         try {
             entityByGuid = atlasClientV2.getEntityByGuid(guid);
-            //atlasClientV2.
         } catch (AtlasServiceException e) {
             e.printStackTrace();
         }
-        return Result.success(entityByGuid);
+        if(entityByGuid!=null){
+            return Result.success(entityByGuid);
+        }else {
+            return Result.fail(SystemErrorType.GUID_NOT_EXIST);
+        }
+    }
+
+
+    /**
+     * 从Hive中获取指定类型(type)指定库(Db)下的所有表(table)
+     * @returnq
+     * @Param typeName：Hive的类型  DbName：库名
+     */
+    private AtlasEntity.AtlasEntityWithExtInfo getTableFromTypeAndDb(String typeName,String DbName){
+        //获取名称为 weather_data 的库相关信息
+        AtlasEntity.AtlasEntityWithExtInfo entityByGuid = null;
+        try {
+            AtlasSearchResult atlasSearchResultDB = atlasClientV2.basicSearch(typeName, "", "name="+DbName, true,1000,0);
+            //获取 weather_data 库的 guid
+            if(atlasSearchResultDB.getEntities()!=null){
+                String guid = atlasSearchResultDB.getEntities().get(0).getGuid();
+                //根据 guid  获取 weather_data库里的所有表
+                entityByGuid = atlasClientV2.getEntityByGuid(guid);
+            }
+        } catch (AtlasServiceException e) {
+            e.printStackTrace();
+        }
+        return entityByGuid;
     }
 
     //根据表的guid获取表的一些attributes
@@ -157,6 +202,8 @@ public class AtlasController {
         }
         return tableList;
     }
+
+
 
 
 
