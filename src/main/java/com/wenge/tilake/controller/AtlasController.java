@@ -53,7 +53,7 @@ public class AtlasController {
                     guidList.add((String) map.get("guid"));
                 }
             }
-            return Result.success(this.getTableAttributesByGuids(guidList));
+            return this.getTableAttributesByGuids(guidList);
         }
         return Result.fail(SystemErrorType.FAIL);
     }
@@ -176,9 +176,9 @@ public class AtlasController {
     }
 
     //封装表的基本信息
-    private List<TableBasicInfoVo> getTableAttributesByGuids(List<String> tableGuidList) {
+    private Result<List<TableBasicInfoVo>> getTableAttributesByGuids(List<String> tableGuidList) {
         if(tableGuidList==null || tableGuidList.size()<=0){
-            return null;
+            return Result.fail(SystemErrorType.DATA_NOT_EXIST);
         }
         List<TableBasicInfoVo> tableList = new ArrayList<>();
         try {
@@ -188,24 +188,18 @@ public class AtlasController {
                 TableBasicInfoVo tableBasicInfoVo = new TableBasicInfoVo();
                 Map<String, Object> relationshipAttributesMap = atlasEntity.getRelationshipAttributes();
                 Map<String, Object> attributesMap = atlasEntity.getAttributes();
-                String guid = atlasEntity.getGuid();
-                Date createTime = atlasEntity.getCreateTime();
-                String comment = String.valueOf(attributesMap.get("comment"));
-                String tableName = String.valueOf(attributesMap.get("name"));
-                Map map= (Map) relationshipAttributesMap.get("db");
-                String db = String.valueOf(map.get("displayText"));
-                tableBasicInfoVo.setTableGuid(guid).setTableName(tableName).setTableComment(comment).setDb(db).setCreateTime(createTime);
+                Map<String, Object> map= (Map) relationshipAttributesMap.get("db");
+                tableBasicInfoVo.setTableGuid(atlasEntity.getGuid())
+                                .setTableName(String.valueOf(attributesMap.get("name")))
+                                .setTableComment(String.valueOf(attributesMap.get("comment")))
+                                .setDb(String.valueOf(map.get("displayText"))).setDbType("Hive")
+                                .setCreateTime(atlasEntity.getCreateTime()).setUpdateTime(atlasEntity.getUpdateTime());
                 tableList.add(tableBasicInfoVo);
             }
         } catch (AtlasServiceException e) {
             e.printStackTrace();
         }
-        return tableList;
+        return Result.success(tableList);
     }
-
-
-
-
-
 }
 

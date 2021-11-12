@@ -28,5 +28,8 @@ public class TableBasicInfoVo {
     @ApiModelProperty(name = "createTime", value = "创建时间")
     private Date createTime;
 
+    @ApiModelProperty(name = "createTime", value = "修改时间")
+    private Date updateTime;
+
 }
 

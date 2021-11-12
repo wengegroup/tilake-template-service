@@ -31,6 +31,7 @@ public enum SystemErrorType implements ErrorType {
     FAIL("070000","Hive的类型和库名不存在或不匹配"),
     TABLE_NOT_EXIST("080000","该库下不存在该表"),
     GUID_NOT_EXIST("090000","Guid不存在")
+
     ;
     /**
      * 错误类型码
