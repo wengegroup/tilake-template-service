@@ -92,7 +92,7 @@ public class AtlasController {
      * @return
      */
     @GetMapping("/getTableLineageByGuid")
-    @ApiOperation("根据表的Guid查询表血缘，传参-guid（表的guid，String）")
+    @ApiOperation("根据Guid查询其血缘关系，传参-guid（表的guid，String）")
     public Result getTableLineageByGuid(@RequestParam("guid") String guid){
         AtlasLineageInfo lineageInfo = null;
         try {
@@ -113,7 +113,7 @@ public class AtlasController {
      * @returnq
      */
     @GetMapping("/getEntityByGuid")
-    @ApiOperation("根据表的Guid查询对应实体信息，传参-guid（表的guid，String）")
+    @ApiOperation("根据Guid查询其实体信息，传参-guid（表的guid，String）")
     public Result getEntityByGuid(@RequestParam("guid") String guid){
         AtlasEntity.AtlasEntityWithExtInfo entityByGuid = null;
         try {
