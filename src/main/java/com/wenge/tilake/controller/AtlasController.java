@@ -14,6 +14,7 @@ import org.apache.atlas.model.discovery.AtlasSearchResult;
 import org.apache.atlas.model.instance.AtlasEntity;
 import org.apache.atlas.model.lineage.AtlasLineageInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,7 +28,8 @@ import java.util.*;
 @RequestMapping("/atlas/api/v1")
 public class AtlasController {
 
-    private AtlasClientV2 atlasClientV2 = new AtlasClientV2(new String[]{"http://gzslave1:21000/"}, new String[]{"admin", "admin%2021"});
+    @Autowired
+    private AtlasClientV2 atlasClientV2;
 
     /**
      * 获取Hive指定类型指定库下的所有表的基本信息

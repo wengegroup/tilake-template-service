@@ -20,3 +20,9 @@ spring:
       allow_unquoted_control_chars: true
       #允许出现单引号
       allow_single_quotes: true
+
+atlas:
+  address: http://gzslave1:21000/
+  name: admin
+  password: admin%2021
+
