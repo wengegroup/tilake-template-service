@@ -1,0 +1,19 @@
+server:
+  port: ${SERVER_PORT:8088}
+  servlet:
+    context-path: /
+spring:
+  application:
+    name: tilake-atlas-service
+  cloud:
+    nacos:
+      discovery:
+        namespace: ${NAMESPACE:tilake-data-platform-namespace}
+        server-addr: ${REGISTER_HOST:192.168.10.179:30848}
+      config:
+        namespace: ${NAMESPACE:tilake-data-platform-namespace}
+        server-addr: ${REGISTER_HOST:192.168.10.179:30848}
+        file-extension: yaml
+        group: DEFAULT_GROUP
+        name: tilake-atlas-service
+
