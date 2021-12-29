@@ -8,10 +8,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableSwagger2
 @EnableDiscoveryClient
-public class AtlasApiApplication {
+public class TemplateApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AtlasApiApplication.class,args);
+        SpringApplication.run(TemplateApiApplication.class,args);
     }
 
 }

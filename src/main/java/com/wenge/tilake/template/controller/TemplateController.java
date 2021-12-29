@@ -1,6 +1,6 @@
 package com.wenge.tilake.template.controller;
 
-import com.wenge.tilake.template.service.AtlasService;
+import com.wenge.tilake.template.service.TemplateService;
 import com.wenge.tilake.template.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -12,15 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
 @RestController
-@Api(value = "atlas-Api", tags = "atlas-Api",description="Hive的类型名称，库名称，以及表名称务必要存在且对应。")
-@RequestMapping("/atlas/api/v1")
-public class AtlasController {
+@Api(value = "template-Api", tags = "template-Api",description="Hive的类型名称，库名称，以及表名称务必要存在且对应。")
+@RequestMapping("/template/api/v1")
+public class TemplateController {
 
     @Autowired
-    private AtlasService atlasService;
+    private TemplateService atlasService;
 
     /**
      * 获取Hive指定类型指定库下的所有表的基本信息

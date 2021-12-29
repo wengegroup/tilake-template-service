@@ -2,7 +2,7 @@ package com.wenge.tilake.template.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wenge.tilake.template.exception.SystemErrorType;
-import com.wenge.tilake.template.service.AtlasService;
+import com.wenge.tilake.template.service.TemplateService;
 import com.wenge.tilake.template.vo.Result;
 import com.wenge.tilake.template.vo.TableBasicInfoVo;
 import org.apache.atlas.AtlasClientV2;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class AtlasServiceImpl implements AtlasService {
+public class TemplateServiceImpl implements TemplateService {
 
     @Autowired
     private AtlasClientV2 atlasClientV2;
