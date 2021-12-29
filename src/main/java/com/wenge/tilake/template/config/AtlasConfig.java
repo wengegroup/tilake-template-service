@@ -1,4 +1,4 @@
-package com.wenge.tilake.config;
+package com.wenge.tilake.template.config;
 
 import org.apache.atlas.AtlasClientV2;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package com.wenge.tilake.exception;
+package com.wenge.tilake.template.exception;
 
 import lombok.Getter;
 

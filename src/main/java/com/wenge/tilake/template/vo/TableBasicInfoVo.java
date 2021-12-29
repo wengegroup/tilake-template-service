@@ -1,4 +1,4 @@
-package com.wenge.tilake.vo;
+package com.wenge.tilake.template.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

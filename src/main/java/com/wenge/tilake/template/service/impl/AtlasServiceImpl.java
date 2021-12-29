@@ -1,10 +1,10 @@
-package com.wenge.tilake.service.impl;
+package com.wenge.tilake.template.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wenge.tilake.exception.SystemErrorType;
-import com.wenge.tilake.service.AtlasService;
-import com.wenge.tilake.vo.Result;
-import com.wenge.tilake.vo.TableBasicInfoVo;
+import com.wenge.tilake.template.exception.SystemErrorType;
+import com.wenge.tilake.template.service.AtlasService;
+import com.wenge.tilake.template.vo.Result;
+import com.wenge.tilake.template.vo.TableBasicInfoVo;
 import org.apache.atlas.AtlasClientV2;
 import org.apache.atlas.AtlasServiceException;
 import org.apache.atlas.model.discovery.AtlasSearchResult;

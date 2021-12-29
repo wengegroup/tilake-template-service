@@ -1,7 +1,7 @@
-package com.wenge.tilake.controller;
+package com.wenge.tilake.template.controller;
 
-import com.wenge.tilake.service.AtlasService;
-import com.wenge.tilake.vo.Result;
+import com.wenge.tilake.template.service.AtlasService;
+import com.wenge.tilake.template.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

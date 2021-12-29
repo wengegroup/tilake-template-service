@@ -1,10 +1,10 @@
-package com.wenge.tilake.vo;
+package com.wenge.tilake.template.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.wenge.tilake.exception.BaseException;
-import com.wenge.tilake.exception.ErrorType;
-import com.wenge.tilake.exception.SystemErrorType;
+import com.wenge.tilake.template.exception.BaseException;
+import com.wenge.tilake.template.exception.ErrorType;
+import com.wenge.tilake.template.exception.SystemErrorType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

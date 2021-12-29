@@ -1,6 +1,6 @@
-package com.wenge.tilake.service;
+package com.wenge.tilake.template.service;
 
-import com.wenge.tilake.vo.Result;
+import com.wenge.tilake.template.vo.Result;
 
 public interface AtlasService {
 

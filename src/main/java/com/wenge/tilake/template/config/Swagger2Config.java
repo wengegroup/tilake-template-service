@@ -1,4 +1,4 @@
-package com.wenge.tilake.config;
+package com.wenge.tilake.template.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
